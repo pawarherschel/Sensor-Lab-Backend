@@ -1,26 +1,17 @@
-mod api;
-mod model;
-mod repository;
+#[macro_use]
+extern crate rocket;
 
-use actix_web::{middleware::Logger, web::Data, App, HttpServer};
+#[get("/hello/<name>/<age>")]
+fn hello_name_age(name: &str, age: u8) -> String {
+    format!("Hello, {} year old named {}!", age, name)
+}
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "debug");
-    std::env::set_var("RUST_BACKTRACE", "1");
-    env_logger::init();
+#[get("/")]
+fn hello() -> &'static str {
+    "Hello, world!"
+}
 
-    let config = aws_config::load_from_env().await;
-    HttpServer::new(move || {
-        App::new()
-            .wrap(Logger::default())
-            .data(Data::new(config.clone()))
-            .service(api::get)
-            .service(api::post)
-            .service(api::put)
-            .service(api::delete)
-    })
-    .bind(("127.0.0.1", 80))?
-    .run()
-    .await
+#[launch]
+fn rocket() -> rocket::Rocket<rocket::Build> {
+    rocket::build().mount("/", routes![hello, hello_name_age])
 }
