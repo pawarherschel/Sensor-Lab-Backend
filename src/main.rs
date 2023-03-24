@@ -1,17 +1,26 @@
 #[macro_use]
 extern crate rocket;
 
-#[get("/hello/<name>/<age>")]
-fn hello_name_age(name: &str, age: u8) -> String {
-    format!("Hello, {} year old named {}!", age, name)
+use rocket::fs::NamedFile;
+use rocket::response::content::RawHtml;
+use std::env::current_dir;
+use std::path::PathBuf;
+
+#[get("/<file..>")]
+async fn files(file: PathBuf) -> Option<NamedFile> {
+    let static_dir = current_dir().unwrap().join("static");
+    let file = static_dir.join(file);
+    NamedFile::open(file).await.ok()
 }
 
 #[get("/")]
-fn hello() -> &'static str {
-    "Hello, world!"
+async fn project<'a>() -> RawHtml<&'a str> {
+    RawHtml(include_str!("../static/index.html"))
 }
 
 #[launch]
 fn rocket() -> rocket::Rocket<rocket::Build> {
-    rocket::build().mount("/", routes![hello, hello_name_age])
+    rocket::build()
+        .mount("/", routes![files])
+        .mount("/project", routes![project])
 }

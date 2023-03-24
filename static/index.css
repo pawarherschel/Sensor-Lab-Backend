@@ -1,0 +1,12 @@
+html {
+  background: #1d1e26;
+}
+
+#animated-bar tbody td {
+  transform-origin: bottom;
+  animation: revealing-bars 4s linear;
+}
+@keyframes revealing-bars {
+  0%  { transform: scaleY( 0 ); }
+  15% { transform: scaleY( 1 ); }
+}
