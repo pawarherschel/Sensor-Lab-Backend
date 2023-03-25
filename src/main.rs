@@ -17,11 +17,6 @@ async fn files(file: PathBuf) -> Option<NamedFile> {
     NamedFile::open(file).await.ok()
 }
 
-#[get("/")]
-fn project<'a>() -> RawHtml<&'a str> {
-    RawHtml(include_str!("../static/index.html"))
-}
-
 async fn poll_python() -> HashMap<String, (u32, u32)> {
     let mut data = HashMap::new();
     data.insert("test1".to_string(), (1, 1));

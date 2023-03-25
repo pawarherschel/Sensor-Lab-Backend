@@ -51,7 +51,7 @@ pub fn sort_data(data: &HashMap<String, (u32, u32)>) -> Vec<(String, u32, u32)> 
     let mut mut_data = {
         let mut ret = Vec::new();
         for (key, (order, value)) in data.iter_mut() {
-            ret.push((key.clone(), order.clone(), value.clone()));
+            ret.push((key.clone(), *order, *value));
         }
         ret
     };
