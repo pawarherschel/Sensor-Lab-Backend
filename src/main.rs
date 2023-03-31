@@ -5,7 +5,6 @@ use std::collections::HashMap;
 use std::env::current_dir;
 use std::path::PathBuf;
 
-use rocker::config::{Config, Environment};
 use rocket::fs::NamedFile;
 use rocket::response::content::RawHtml;
 
@@ -54,11 +53,6 @@ async fn api() -> RawHtml<String> {
 
 #[launch]
 fn rocket() -> rocket::Rocket<rocket::Build> {
-    let config = Config::build(Environment::Staging)
-        .address("0.0.0.0")
-        .finalize()
-        .unwrap();
-
     rocket::build()
         .mount("/", routes![files])
         .mount("/project", routes![api])
